@@ -13,5 +13,5 @@ DOI_TEMPLATE_ID = ""                       # À REMPLACER : modèle de double op
 MCP_ENABLED = "false"                      # "true" uniquement après la règle WAF sur /mcp
 
 [[r2_buckets]]
-binding = "ASSETS"
+binding = "PDF_BUCKET"                     # "ASSETS" est réservé par Cloudflare Pages (binding d'assets statiques)
 bucket_name = "vd-private-assets"          # bucket privé, sans accès public

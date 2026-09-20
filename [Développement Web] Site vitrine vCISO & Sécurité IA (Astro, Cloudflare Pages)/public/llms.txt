@@ -1,0 +1,36 @@
+# VD, vCISO et sécurité de l'IA
+
+> VD est RSSI externalisé (vCISO) et consultant indépendant en sécurité de l'IA générative et agentique, avec plus de 15 ans d'expérience. Il accompagne les dirigeants de PME, ETI et scale-ups européennes (50 à 5 000 salariés) soumises à NIS2, DORA ou à l'AI Act, ou qui déploient des systèmes d'IA en production.
+
+Deux offres, et seulement deux :
+
+- vCISO · RSSI-as-a-Service : abonnement mensuel à temps partagé, sans engagement long terme. Gouvernance sécurité, conformité NIS2, DORA et ISO 27001, gestion de crise, préparation aux due diligences, reporting COMEX.
+- Accompagnement Sécurité IA : mission cadrée de 30 à 90 jours. Classification AI Act, threat modeling LLM, RAG et MCP (MITRE ATLAS, OWASP Top 10 for LLM Applications), garde-fous techniques, gouvernance ISO 42001.
+
+Zone d'intervention : France et Union européenne, en français et en anglais.
+Sujets traités : NIS2, DORA, AI Act, RGPD, ISO/IEC 27001, ISO/IEC 42001, sécurité des LLM, RAG, Model Context Protocol, agents IA, gestion de crise cyber, due diligence cyber.
+
+Note sur les contenus : les analyses sont datées et citent leurs sources primaires. Elles informent et ne constituent pas un avis juridique ; vérifiez l'état des textes à la date de consultation.
+
+## Pages principales
+
+- [Accueil](https://vd-cybersec.fr/): positionnement et FAQ
+- [Offres](https://vd-cybersec.fr/services): détail et comparaison des deux offres
+- [Analyses](https://vd-cybersec.fr/blog): articles sur NIS2, AI Act, sécurité des LLM, gestion de crise
+- [Diagnostic](https://vd-cybersec.fr/diagnostic): auto-évaluation en 13 questions inspirée du guide ANSSI pour TPE/PME
+- [Ressources](https://vd-cybersec.fr/ressources): checklists, matrices et playbooks
+- [Contact](https://vd-cybersec.fr/contact): demande de session de cadrage de 30 minutes
+
+## Articles
+
+- [vCISO ou RSSI interne](https://vd-cybersec.fr/blog/vciso-vs-rssi-interne)
+- [Sécuriser un LLM et un RAG en production](https://vd-cybersec.fr/blog/securite-llm-rag-production)
+- [NIS2 pour les PME et ETI](https://vd-cybersec.fr/blog/guide-nis2-pme)
+- [AI Act : matrice et calendrier 2026](https://vd-cybersec.fr/blog/matrice-ai-act-2026)
+- [Incident cyber : les 24 premières heures](https://vd-cybersec.fr/blog/kit-incident-cyber-24h)
+- [Due diligence cyber avant une levée de fonds](https://vd-cybersec.fr/blog/checklist-due-diligence-cyber-levee-de-fonds)
+
+## Optional
+
+- [Politique de divulgation](https://vd-cybersec.fr/politique-divulgation)
+- [Confidentialité](https://vd-cybersec.fr/confidentialite)

@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import { ARTICLES } from '../../data/blog';
+import { graph, org, breadcrumb } from '../../data/schema';
+import { SITE } from '../../data/site';
+
+const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const jsonLd = graph(
+  org,
+  {
+    '@type': 'Blog',
+    '@id': `${SITE.url}/blog#blog`,
+    name: 'Analyses',
+    inLanguage: 'fr-FR',
+    publisher: { '@id': `${SITE.url}/#org` },
+    blogPost: ARTICLES.map((a) => ({ '@type': 'BlogPosting', headline: a.title, url: `${SITE.url}/blog/${a.slug}`, datePublished: a.publishedAt })),
+  },
+  breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Analyses', path: '/blog' }]),
+);
+const piliers = ARTICLES.filter((a) => a.kind === 'pilier');
+const satellites = ARTICLES.filter((a) => a.kind === 'satellite');
+---
+<Base
+  title="Analyses : NIS2, AI Act, sécurité des LLM et gouvernance"
+  description="Analyses sobres et sourcées pour dirigeants : vCISO, NIS2, AI Act, sécurité des LLM et RAG, gestion de crise, due diligence cyber."
+  jsonLd={jsonLd}
+>
+  <section class="wrap article-head">
+    <h1>Analyses</h1>
+    <p class="lead">Des textes courts et sourcés, écrits pour décider. Chaque date réglementaire renvoie à sa source.</p>
+  </section>
+
+  {[{ title: 'Guides de référence', items: piliers }, { title: 'Fiches pratiques', items: satellites }].map((group) => (
+    <section class="section wrap" aria-label={group.title}>
+      <div class="hang">
+        <div class="hang-head"><h2>{group.title}</h2></div>
+        <ul class="list-plain">
+          {group.items.map((a) => (
+            <li class="entry">
+              <p class="entry-meta">{a.category}, <time datetime={a.publishedAt}>{fmt.format(new Date(a.publishedAt))}</time>, {a.readingMinutes} min de lecture</p>
+              <h3><a href={`/blog/${a.slug}`}>{a.title}</a></h3>
+              <p class="muted">{a.excerpt}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+</Base>

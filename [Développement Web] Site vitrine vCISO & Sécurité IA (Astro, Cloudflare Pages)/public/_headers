@@ -1,0 +1,32 @@
+# Cloudflare Pages - en-têtes HTTP
+# CSP durcie par rapport au brief :
+#  - style-src 'self' (sans 'unsafe-inline') : aucune feuille ni attribut style inline (vérifié par npm run check:csp)
+#  - img-src 'self' data: (sans https:) : aucune image externe
+#  - require-trusted-types-for 'script' : les scripts n'utilisent aucun sink DOM dangereux
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests; require-trusted-types-for 'script'
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), microphone=(), payment=(), usb=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+# Ressources versionnées par Astro : cache long
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/js/*
+  Cache-Control: public, max-age=3600
+
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+# Pages de prévisualisation Cloudflare (*.pages.dev) : ne pas indexer
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex

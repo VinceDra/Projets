@@ -1,0 +1,30 @@
+---
+import { SITE, NAV } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <p><strong>VD</strong>, RSSI externalisé et accompagnement sécurité de l'IA pour PME, ETI et scale-ups européennes.</p>
+      <p class="muted small">Ce site n'utilise ni cookie, ni traceur, ni ressource externe.</p>
+      <p class="small"><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    </div>
+    <div>
+      <h2>Site</h2>
+      <ul>
+        {NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Informations</h2>
+      <ul>
+        <li><a href="/mentions-legales">Mentions légales</a></li>
+        <li><a href="/confidentialite">Confidentialité</a></li>
+        <li><a href="/politique-divulgation">Signaler une vulnérabilité</a></li>
+        {SITE.linkedin && <li><a href={SITE.linkedin} rel="noopener noreferrer me">LinkedIn</a></li>}
+      </ul>
+    </div>
+  </div>
+  <div class="wrap"><p class="muted small">© {year} {SITE.legalName}</p></div>
+</footer>

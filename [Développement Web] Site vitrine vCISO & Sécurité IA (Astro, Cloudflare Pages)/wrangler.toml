@@ -1,0 +1,17 @@
+# Configuration Cloudflare Pages (fonctions + bindings). Les secrets ne vont JAMAIS ici :
+#   wrangler pages secret put BREVO_API_KEY | DOWNLOAD_SECRET
+name = "vd-cybersec"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-01"
+
+[vars]
+SITE_ORIGIN = "https://vd-cybersec.fr"
+SENDER_EMAIL = "no-reply@vd-cybersec.fr"   # À REMPLACER : expéditeur vérifié dans Brevo
+NOTIFY_EMAIL = "contact@vd-cybersec.fr"    # À REMPLACER : boîte de réception des demandes
+NEWSLETTER_LIST_ID = ""                    # À REMPLACER : identifiant de liste Brevo
+DOI_TEMPLATE_ID = ""                       # À REMPLACER : modèle de double opt-in Brevo
+MCP_ENABLED = "false"                      # "true" uniquement après la règle WAF sur /mcp
+
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "vd-private-assets"          # bucket privé, sans accès public

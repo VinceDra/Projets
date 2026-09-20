@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import LeadFields from '../components/LeadFields.astro';
+import ConsentFields from '../components/ConsentFields.astro';
+import { SITE } from '../data/site';
+import { graph, org, breadcrumb } from '../data/schema';
+
+const jsonLd = graph(
+  org,
+  { '@type': 'ContactPage', '@id': `${SITE.url}/contact#page`, about: { '@id': `${SITE.url}/#org` } },
+  breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Contact', path: '/contact' }]),
+);
+// Présélection du sujet depuis /services (?sujet=vciso|ia) via /js/contact.js (liste blanche).
+const subjects = [
+  { value: 'vciso', label: 'vCISO' },
+  { value: 'ia', label: 'Sécurité IA' },
+  { value: 'diagnostic', label: 'Diagnostic' },
+  { value: 'autre', label: 'Autre' },
+];
+---
+<Base
+  title="Contact et prise de rendez-vous"
+  description="Demandez une session de cadrage de 30 minutes pour un accompagnement vCISO ou Sécurité IA."
+  jsonLd={jsonLd}
+>
+  <section class="wrap article-head">
+    <h1>Parlons de votre contexte</h1>
+    <p class="lead">Une session de cadrage de 30 minutes, en visio ou par téléphone. Vous repartez avec une première lecture de vos priorités, que vous donniez suite ou non.</p>
+  </section>
+  <section class="section wrap">
+    <div class="hang">
+      <div class="hang-head prose">
+        <h2>Comment ça se passe</h2>
+        <ol>
+          <li>Vous décrivez votre besoin ci-contre.</li>
+          <li>Réponse sous 2 jours ouvrés avec des créneaux proposés.</li>
+          <li>Cadrage de 30 minutes : contexte, échéances, contraintes.</li>
+          <li>Si pertinent, proposition écrite sous une semaine.</li>
+        </ol>
+        <p class="small muted">Un accord de confidentialité peut être signé avant tout échange détaillé. Pour un signalement de vulnérabilité, écrivez plutôt à <a href={`mailto:${SITE.securityEmail}`}>{SITE.securityEmail}</a>.</p>
+      </div>
+      <form class="form" action="/api/contact-submit" method="post" aria-label="Formulaire de contact">
+        <LeadFields idPrefix="ct" />
+        <div class="field">
+          <label for="ct-subject">Sujet</label>
+          <select id="ct-subject" name="subject" required>
+            <option value="" disabled selected>Choisir un sujet</option>
+            {subjects.map((s) => <option value={s.value}>{s.label}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="ct-message">Message</label>
+          <textarea id="ct-message" name="message" required minlength="20" maxlength="4000" aria-describedby="ct-message-help"></textarea>
+          <span class="help" id="ct-message-help">Contexte, échéance, taille de l'entreprise. N'indiquez aucun mot de passe ni détail de vulnérabilité non corrigée.</span>
+        </div>
+        <ConsentFields idPrefix="ct" />
+        <div><button class="btn btn-primary" type="submit">Demander un cadrage</button></div>
+      </form>
+    </div>
+  </section>
+  <script is:inline src="/js/contact.js" defer></script>
+</Base>

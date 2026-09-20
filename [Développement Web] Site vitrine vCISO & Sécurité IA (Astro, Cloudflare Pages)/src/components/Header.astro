@@ -1,0 +1,29 @@
+---
+import { NAV } from '../data/site';
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const current = (href: string) => (path === href || path.startsWith(href + '/') ? 'page' : undefined);
+---
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="VD, accueil">
+      <span class="brand-name">VD</span>
+      <span class="brand-role">vCISO et sécurité de l'IA</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Navigation principale">
+      <ul>
+        {NAV.map((n) => <li><a href={n.href} aria-current={current(n.href)}>{n.label}</a></li>)}
+        <li><a class="btn btn-primary" href="/contact">Prendre rendez-vous</a></li>
+      </ul>
+    </nav>
+    {/* Menu mobile sans JavaScript : <details> natif, accessible au clavier */}
+    <details class="nav-mobile">
+      <summary>Menu</summary>
+      <nav aria-label="Navigation principale (mobile)">
+        <ul>
+          {NAV.map((n) => <li><a href={n.href} aria-current={current(n.href)}>{n.label}</a></li>)}
+          <li><a href="/contact" aria-current={current('/contact')}>Prendre rendez-vous</a></li>
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

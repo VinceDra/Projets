@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import LeadFields from '../components/LeadFields.astro';
+import ConsentFields from '../components/ConsentFields.astro';
+import { DIAG_QUESTIONS } from '../data/diagnostic';
+import { graph, org, breadcrumb } from '../data/schema';
+
+const jsonLd = graph(org, breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Diagnostic', path: '/diagnostic' }]));
+const answers = [
+  { value: 'yes', label: 'Oui' },
+  { value: 'partial', label: 'Partiel' },
+  { value: 'no', label: 'Non' },
+];
+---
+<Base
+  title="Diagnostic cybersécurité gratuit en 13 questions"
+  description="Évaluez votre niveau de cybersécurité en 5 minutes à partir des 13 questions du guide ANSSI pour TPE et PME. Score immédiat, sans inscription."
+  jsonLd={jsonLd}
+>
+  <section class="wrap article-head">
+    <h1>Diagnostic cybersécurité en 13 questions</h1>
+    <p class="lead">Cinq minutes, un score immédiat et la liste de vos points de vigilance. Aucune donnée n'est envoyée tant que vous ne demandez pas le rapport.</p>
+    <p class="small muted">
+      Questions adaptées du guide « La cybersécurité pour les TPE/PME en 13 questions » publié par l'ANSSI et la DGE
+      (<a href="https://www.entreprises.gouv.fr/la-dge/publications/la-cybersecurite-pour-les-tpepme-en-13-questions" rel="noopener noreferrer">2e édition, octobre 2022</a>).
+      Ce score est indicatif et ne remplace pas un audit.
+    </p>
+  </section>
+
+  <div class="diag-progress" aria-hidden="true">
+    <div class="wrap">
+      <progress id="diag-progress" max={DIAG_QUESTIONS.length} value="0"></progress>
+      <span class="diag-count" id="diag-count">0 / {DIAG_QUESTIONS.length}</span>
+    </div>
+  </div>
+
+  <form class="wrap section" id="diag-form" action="/api/diagnostic-submit" method="post">
+    <noscript>
+      <p class="cta-box">Le calcul instantané du score nécessite JavaScript. Vous pouvez tout de même répondre et demander le rapport détaillé en bas de page.</p>
+    </noscript>
+
+    {DIAG_QUESTIONS.map((q, i) => (
+      <div class="diag-q" role="radiogroup" data-q={q.id} data-vigilance={q.vigilance} aria-labelledby={`${q.id}-label`} aria-describedby={`${q.id}-hint`}>
+        <span class="diag-num" aria-hidden="true">{i + 1}</span>
+        <div>
+          <p class="diag-label" id={`${q.id}-label`}><span class="diag-theme">{q.theme}</span>{q.question}</p>
+          <p class="small muted" id={`${q.id}-hint`}>{q.hint}</p>
+        </div>
+        <div class="seg">
+          {answers.map((a) => (
+            <label><input type="radio" name={q.id} value={a.value} required />{a.label}</label>
+          ))}
+        </div>
+      </div>
+    ))}
+
+    <section class="result" id="diag-result" hidden aria-live="polite" aria-labelledby="diag-result-title">
+      <h2 id="diag-result-title">Votre résultat</h2>
+      <div class="result-score">
+        <strong id="diag-score">0 %</strong>
+        <span class="result-level" id="diag-level" data-level="">-</span>
+      </div>
+      <p class="small muted">Seuils : 75 % et plus, Mature. De 50 à 74 %, Intermédiaire. Moins de 50 %, À renforcer.</p>
+      <h3>Points de vigilance détectés</h3>
+      <ul class="vigilance" id="diag-vigilance"></ul>
+    </section>
+    <input type="hidden" name="score" value="" />
+
+    <section aria-labelledby="diag-gate-title" class="section">
+      <div class="hang">
+        <div class="hang-head">
+          <h2 id="diag-gate-title">Recevoir le rapport détaillé et le plan d'action</h2>
+          <p class="muted">Le rapport reprend chaque réponse, les mesures prioritaires et les ressources officielles utiles. Envoyé par email sous 48 h ouvrées.</p>
+        </div>
+        <div class="form">
+          <LeadFields idPrefix="diag" />
+          <ConsentFields idPrefix="diag" />
+          <div><button class="btn btn-primary" type="submit">Recevoir mon rapport</button></div>
+          <p class="form-note">Vos réponses et coordonnées servent uniquement à produire ce rapport. Détails dans la <a href="/confidentialite">politique de confidentialité</a>.</p>
+        </div>
+      </div>
+    </section>
+  </form>
+
+  <script is:inline src="/js/diagnostic.js" defer></script>
+</Base>

@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import { graph, org, breadcrumb } from '../data/schema';
+const jsonLd = graph(org, breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Newsletter', path: '/newsletter' }]));
+---
+<Base
+  title="Cyber Signal, la lettre mensuelle pour dirigeants et DSI"
+  description="Une lettre par mois : menaces qui touchent les PME, décryptage NIS2 et AI Act, retours d'expérience de terrain. Sans catastrophisme."
+  jsonLd={jsonLd}
+>
+  <section class="wrap article-head">
+    <h1>Cyber Signal</h1>
+    <p class="lead">Une lettre par mois pour dirigeants et DSI. Ce qui a changé, ce que cela implique pour vous, ce qu'il faut décider.</p>
+  </section>
+  <section class="section wrap">
+    <div class="hang">
+      <div class="prose">
+        <h2>Au sommaire de chaque numéro</h2>
+        <ul>
+          <li><strong>Menaces.</strong> Les modes d'attaque qui touchent réellement les PME et ETI ce mois-ci, avec la mesure qui les bloque.</li>
+          <li><strong>Réglementation.</strong> NIS2, DORA, AI Act : ce qui a bougé, sources à l'appui, sans alarmisme.</li>
+          <li><strong>Terrain.</strong> Un retour d'expérience de mission vCISO, anonymisé.</li>
+        </ul>
+        <p class="muted">Une lecture de cinq minutes. Pas de publicité, pas de revente d'adresses, pas de pixel de suivi.</p>
+      </div>
+      <div>
+        <h2 id="nl-title">S'inscrire</h2>
+        <form class="form" action="/api/newsletter-subscribe" method="post" aria-labelledby="nl-title">
+          <div class="field">
+            <label for="nl-email">Email professionnel</label>
+            <input type="email" id="nl-email" name="email" autocomplete="email" required maxlength="254" inputmode="email" />
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label for="nl-website">Ne pas remplir ce champ</label>
+            <input type="text" id="nl-website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <label class="check">
+            <input type="checkbox" name="rgpd" value="1" required />
+            <span>J'accepte de recevoir Cyber Signal et que mon adresse soit traitée selon la <a href="/confidentialite">politique de confidentialité</a>. Désinscription en un clic.</span>
+          </label>
+          <div><button class="btn btn-primary" type="submit">M'inscrire</button></div>
+          <p class="form-note">Un email de confirmation vous sera envoyé (double opt-in).</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>

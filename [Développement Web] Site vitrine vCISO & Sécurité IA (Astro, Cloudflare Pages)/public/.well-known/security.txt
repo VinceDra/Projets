@@ -1,0 +1,9 @@
+# Politique de divulgation : https://vd-cybersec.fr/politique-divulgation
+# RFC 9116. Renouveler avant expiration (valeur recommandée : moins d'un an).
+Contact: mailto:security@vd-cybersec.fr
+Expires: 2027-08-31T23:00:00Z
+Policy: https://vd-cybersec.fr/politique-divulgation
+Preferred-Languages: fr, en
+Canonical: https://vd-cybersec.fr/.well-known/security.txt
+# À AJOUTER après génération de la clé : Encryption: https://vd-cybersec.fr/.well-known/pgp-key.txt
+# Recommandé : signer ce fichier en OpenPGP (clearsign) une fois la clé publiée.

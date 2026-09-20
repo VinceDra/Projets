@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import Faq from '../../components/Faq.astro';
+import Cta from '../../components/Cta.astro';
+import { ARTICLES, type Article } from '../../data/blog';
+import { getResource } from '../../data/resources';
+import { graph, blogPosting, faqPage, breadcrumb, person } from '../../data/schema';
+
+export function getStaticPaths() {
+  return ARTICLES.map((a) => ({ params: { slug: a.slug }, props: { article: a } }));
+}
+interface Props { article: Article }
+const { article: a } = Astro.props;
+const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const lead = getResource(a.leadMagnetSlug);
+const related = ARTICLES.filter((x) => x.slug !== a.slug && x.category === a.category).slice(0, 2);
+const path = `/blog/${a.slug}`;
+const jsonLd = graph(
+  person,
+  blogPosting(a),
+  faqPage(a.faq, path),
+  breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Analyses', path: '/blog' }, { name: a.title, path }]),
+);
+---
+<Base title={a.title} description={a.excerpt} jsonLd={jsonLd} ogType="article">
+  <article>
+    <header class="wrap article-head">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <ol><li><a href="/">Accueil</a></li><li><a href="/blog">Analyses</a></li><li aria-current="page">{a.category}</li></ol>
+      </nav>
+      <h1>{a.title}</h1>
+      <p class="entry-meta">
+        Publié le <time datetime={a.publishedAt}>{fmt.format(new Date(a.publishedAt))}</time>,
+        {a.readingMinutes} min de lecture{a.updatedAt && <>, mis à jour le <time datetime={a.updatedAt}>{fmt.format(new Date(a.updatedAt))}</time></>}
+      </p>
+      <p class="lead">{a.excerpt}</p>
+    </header>
+
+    <div class="wrap article-body">
+      <div class="prose">
+        {a.body.map((b) => {
+          if (b.t === 'h2') return <h2>{b.text}</h2>;
+          if (b.t === 'h3') return <h3>{b.text}</h3>;
+          if (b.t === 'p') return <p>{b.text}</p>;
+          if (b.t === 'ul') return <ul>{b.items.map((i) => <li>{i}</li>)}</ul>;
+          if (b.t === 'ol') return <ol>{b.items.map((i) => <li>{i}</li>)}</ol>;
+          if (b.t === 'quote') return <blockquote><p>{b.text}</p></blockquote>;
+          return null;
+        })}
+
+        <Cta {...a.cta} />
+
+        <section aria-labelledby="faq-title">
+          <h2 id="faq-title">Questions fréquentes</h2>
+          <Faq items={a.faq} />
+        </section>
+
+        {lead && lead.slug !== a.cta.href.split('/').pop() && (
+          <p class="small">Ressource associée : <a href={`/ressources/${lead.slug}`}>{lead.title}</a>.</p>
+        )}
+
+        <section class="sources" aria-labelledby="sources-title">
+          <h2 id="sources-title" class="small">Sources</h2>
+          <ul>{a.sources.map((s) => <li><a href={s.url} rel="noopener noreferrer">{s.label}</a></li>)}</ul>
+          <p>Cet article informe et ne constitue pas un avis juridique.</p>
+        </section>
+
+        {related.length > 0 && (
+          <nav aria-labelledby="related-title">
+            <h2 id="related-title">À lire aussi</h2>
+            <ul class="list-plain">{related.map((r) => <li class="entry"><h3><a href={`/blog/${r.slug}`}>{r.title}</a></h3></li>)}</ul>
+          </nav>
+        )}
+      </div>
+    </div>
+  </article>
+</Base>

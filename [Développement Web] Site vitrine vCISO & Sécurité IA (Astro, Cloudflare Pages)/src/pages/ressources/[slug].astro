@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import LeadFields from '../../components/LeadFields.astro';
+import ConsentFields from '../../components/ConsentFields.astro';
+import { RESOURCES, type Resource } from '../../data/resources';
+import { getArticle } from '../../data/blog';
+import { graph, org, breadcrumb } from '../../data/schema';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return RESOURCES.map((r) => ({ params: { slug: r.slug }, props: { resource: r } }));
+}
+interface Props { resource: Resource }
+const { resource: r } = Astro.props;
+const article = r.relatedArticle ? getArticle(r.relatedArticle) : undefined;
+const path = `/ressources/${r.slug}`;
+const jsonLd = graph(
+  org,
+  {
+    '@type': 'DigitalDocument',
+    '@id': `${SITE.url}${path}#document`,
+    name: r.title,
+    description: r.description,
+    inLanguage: 'fr-FR',
+    isAccessibleForFree: true,
+    publisher: { '@id': `${SITE.url}/#org` },
+  },
+  breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Ressources', path: '/ressources' }, { name: r.title, path }]),
+);
+---
+<Base title={r.title} description={r.description} jsonLd={jsonLd}>
+  <section class="wrap article-head">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <ol><li><a href="/">Accueil</a></li><li><a href="/ressources">Ressources</a></li><li aria-current="page">{r.type}</li></ol>
+    </nav>
+    <h1>{r.title}</h1>
+    <p class="lead">{r.description}</p>
+    <p class="entry-meta">{r.type}, {r.format}</p>
+  </section>
+
+  <section class="section wrap">
+    <div class="hang">
+      <div class="prose">
+        <h2>Ce que vous en tirez</h2>
+        <ul>{r.benefits.map((b) => <li>{b}</li>)}</ul>
+        <h2>Contenu</h2>
+        <ol>{r.contents.map((c) => <li>{c}</li>)}</ol>
+        {article && <p class="small">Pour le contexte : <a href={`/blog/${article.slug}`}>{article.title}</a>.</p>}
+      </div>
+      <div>
+        <h2 id="dl-title">Recevoir le document</h2>
+        <form class="form" action="/api/resource-download" method="post" aria-labelledby="dl-title">
+          <input type="hidden" name="resource" value={r.slug} />
+          <LeadFields idPrefix="dl" />
+          <ConsentFields idPrefix="dl" />
+          <div><button class="btn btn-primary" type="submit">Recevoir par email</button></div>
+          <p class="form-note">Le lien de téléchargement est envoyé à l'adresse indiquée et expire après 7 jours.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>

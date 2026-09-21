@@ -1,6 +1,6 @@
 # Configuration Cloudflare Pages (fonctions + bindings). Les secrets ne vont JAMAIS ici :
 #   wrangler pages secret put BREVO_API_KEY | DOWNLOAD_SECRET
-name = "vd-cybersec"
+name = "mainwebsite"               # doit correspondre exactement au nom du projet Cloudflare Pages
 pages_build_output_dir = "dist"
 compatibility_date = "2026-09-01"
 

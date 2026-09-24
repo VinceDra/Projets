@@ -1,8 +1,13 @@
-# Configuration Cloudflare Pages (fonctions + bindings). Les secrets ne vont JAMAIS ici :
-#   wrangler pages secret put BREVO_API_KEY | DOWNLOAD_SECRET
-name = "mainwebsite"               # doit correspondre exactement au nom du projet Cloudflare Pages
-pages_build_output_dir = "dist"
+# Configuration Worker (Workers + assets). Les secrets ne vont JAMAIS ici :
+#   wrangler secret put BREVO_API_KEY | DOWNLOAD_SECRET
+name = "mainwebsite"                # doit correspondre exactement au nom du projet Cloudflare
+main = "src/index.ts"
 compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"                  # utilisé par src/index.ts pour servir les fichiers statiques en fallback
+not_found_handling = "404-page"     # sert dist/404.html pour tout chemin sans correspondance
 
 [vars]
 SITE_ORIGIN = "https://vd-cybersec.fr"
@@ -13,5 +18,5 @@ DOI_TEMPLATE_ID = ""                       # À REMPLACER : modèle de double op
 MCP_ENABLED = "false"                      # "true" uniquement après la règle WAF sur /mcp
 
 [[r2_buckets]]
-binding = "PDF_BUCKET"                     # "ASSETS" est réservé par Cloudflare Pages (binding d'assets statiques)
+binding = "PDF_BUCKET"
 bucket_name = "vd-private-assets"          # bucket privé, sans accès public

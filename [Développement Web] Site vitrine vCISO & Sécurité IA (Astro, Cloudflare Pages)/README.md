@@ -1,27 +1,30 @@
 # Site VD : vCISO et sécurité de l'IA
 
-Site statique Astro, déployé sur Cloudflare Pages. Zéro script, style ou police tiers. Zéro cookie.
+Site statique Astro sur Cloudflare Workers (Workers + assets, `src/index.ts`), servi via `env.ASSETS` avec un routage applicatif pour `/api/*`, `/telechargement` et `/mcp`. Zéro script, style ou police tiers. Zéro cookie.
 
 ## Démarrer
 
 ```bash
-npm install          # Astro 5.x (seule dépendance)
+npm install          # Astro 7.x (seule dépendance)
 npm run dev          # http://localhost:4321
 npm run build        # sortie dans dist/
 npm run check:csp    # échoue si le HTML contient du JS/CSS inline ou une ressource externe
+npx wrangler deploy --dry-run   # valide le bundling du Worker sans déployer (bindings, imports)
 ```
 
-**Statut : non compilé.** Écrit hors réseau. Testés : données TS, script du diagnostic (Chromium, CSP stricte + Trusted Types), fonctions `/api`, `/telechargement` et `/mcp` (Brevo simulé). Non testées : les pages `.astro`. Lancer `npm run build && npm run check:csp` avant tout déploiement.
+**Statut : compilé et validé.** `npm run build` (24 pages) et `npx wrangler deploy --dry-run` passent. Non testé : appel réel à Brevo (nécessite les secrets en production).
 
-## Déployer sur Cloudflare Pages
+## Déployer sur Cloudflare Workers
 
-1. Dépôt Git connecté à Pages. Build : `npm run build`, sortie : `dist`. Variables non secrètes et binding R2 : `wrangler.toml`.
-2. Secrets : `wrangler pages secret put BREVO_API_KEY` et `DOWNLOAD_SECRET` (32 octets aléatoires : `openssl rand -base64 32`).
-3. R2 : créer le bucket privé `vd-private-assets`, y déposer `private-assets/pdf/*.pdf` (clé = nom du fichier).
+Ce projet est un **Worker** (pas un projet Pages classique) : `wrangler.toml` déclare `main = "src/index.ts"` et `[assets] directory = "./dist"`. Sur le dashboard, un projet créé via *Create → Workers → Connect to Git* utilise par défaut la commande `npx wrangler deploy`, qui correspond à cette configuration sans rien à changer.
+
+1. Dépôt Git connecté (Workers Builds). Build : `npm run build`. Deploy command (par défaut) : `npx wrangler deploy`.
+2. Secrets : `wrangler secret put BREVO_API_KEY` et `wrangler secret put DOWNLOAD_SECRET` (32 octets aléatoires : `openssl rand -base64 32`).
+3. R2 : créer le bucket privé `vd-private-assets`, y déposer `private-assets/pdf/*.pdf` (clé = nom du fichier). Binding `PDF_BUCKET` déjà déclaré dans `wrangler.toml`.
 4. Brevo : vérifier le domaine expéditeur (SPF, DKIM, DMARC), créer la liste Cyber Signal et le modèle de double opt-in, reporter leurs identifiants dans `wrangler.toml`. Vérifier les endpoints utilisés dans `server/brevo.ts` sur developers.brevo.com.
 5. WAF > Rate limiting : `/api/*` (ex. 10 req/min/IP), `/telechargement` (ex. 20), `/mcp` (ex. 30) avant de passer `MCP_ENABLED` à `"true"`.
 6. DNS : CAA, DMARC `p=reject`, DNSSEC.
-7. Vérifier les en-têtes en production (`curl -I`).
+7. Vérifier les en-têtes en production (`curl -I`) — `public/_headers` fonctionne aussi sur Workers + assets (pas seulement sur Pages) et s'applique aux pages statiques. Comme avec l'ancien modèle Pages Functions, il ne s'applique pas aux réponses générées par le code (`/api/*`, `/telechargement`, `/mcp` dans `src/index.ts`), qui ne renvoient que `Content-Type`/`Cache-Control` — inchangé par rapport à l'architecture précédente, pas une régression de cette migration.
 
 ## Livrables PDF
 
@@ -36,13 +39,11 @@ public/
   robots.txt, llms.txt, favicon.svg, images/og.png
   js/diagnostic.js           calcul du score (local, sans innerHTML)
   js/contact.js              présélection du sujet
-functions/api/[form].ts      réception des 4 formulaires : validation, relais Brevo, lien signé
-functions/telechargement.ts  sert un PDF depuis R2 si la signature est valide
-functions/mcp.ts             serveur MCP lecture seule (désactivé par défaut)
 server/                      client Brevo (texte brut uniquement), signature HMAC
 private-assets/              sources et PDF des 6 ressources (hors déploiement)
-wrangler.toml                variables, binding R2
+wrangler.toml                Worker (main, [assets], binding R2, variables)
 src/
+  index.ts                   Worker : routage /api/*, /telechargement, /mcp + fallback assets statiques
   data/                      source unique : site, offres, blog, ressources, diagnostic, FAQ, Schema.org
   layouts/Base.astro
   components/                Header, Footer, Faq, Cta, JsonLd, LeadFields, ConsentFields
@@ -74,7 +75,7 @@ scripts/check-csp.mjs
 
 ## À REMPLACER avant mise en ligne
 
-Rechercher `À REMPLACER` et `À CONFIRMER` dans le dépôt (`grep -rn "À REMPLACER\|À CONFIRMER" src public functions`).
+Rechercher `À REMPLACER` et `À CONFIRMER` dans le dépôt (`grep -rn "À REMPLACER\|À CONFIRMER" src public`).
 
 - `src/data/site.ts` : nom complet, raison sociale, email de contact, LinkedIn.
 - Portrait `public/images/vd.webp` (voir commentaire dans `src/pages/index.astro`).
@@ -108,3 +109,4 @@ Pour utiliser Inter ou Plus Jakarta Sans : placer les fichiers WOFF2 (licence OF
 - Le rapport détaillé du diagnostic n'est pas automatisé : la demande arrive par email et le rapport est rédigé par VD (délai annoncé : 48 h ouvrées).
 - Pas de CAPTCHA : Turnstile nécessiterait un script tiers (incompatible avec la CSP actuelle). Pot de miel + rate limiting WAF en première ligne.
 - `/mcp` implémenté mais désactivé : l'ouvrir seulement si le besoin est mesuré (voir `docs/mcp-spec.md`, section 1).
+- Migration Pages Functions -> Worker unique (`src/index.ts`) : bundling validé par `npx wrangler deploy --dry-run` (imports, bindings résolus, 41 fichiers assets détectés), mais jamais testé en déploiement réel ni via `curl` sur les routes `/api/*`, `/telechargement`, `/mcp`. À valider dès le premier déploiement effectif.

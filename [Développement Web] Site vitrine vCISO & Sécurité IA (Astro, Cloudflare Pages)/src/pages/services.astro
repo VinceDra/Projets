@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import Cta from '../components/Cta.astro';
+import { OFFERS, SITE } from '../data/site';
+import { graph, org, breadcrumb } from '../data/schema';
+
+const services = OFFERS.map((o) => ({
+  '@type': 'Service',
+  '@id': `${SITE.url}/services#${o.id}`,
+  name: o.name,
+  description: o.summary,
+  provider: { '@id': `${SITE.url}/#org` },
+  areaServed: SITE.areaServed,
+  serviceType: o.id === 'vciso' ? 'RSSI externalisé' : "Sécurité des systèmes d'IA",
+}));
+const jsonLd = graph(org, ...services, breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Offres', path: '/services' }]));
+const [vciso, ia] = OFFERS;
+---
+<Base
+  title="Offres : vCISO et accompagnement Sécurité IA"
+  description="Deux offres : un RSSI externalisé en abonnement mensuel, et une mission de 30 à 90 jours pour sécuriser vos LLM, RAG, serveurs MCP et agents."
+  jsonLd={jsonLd}
+>
+  <section class="wrap article-head">
+    <h1>Deux offres, un même objectif : des décisions de sécurité que votre direction peut défendre.</h1>
+    <p class="lead">Chaque engagement commence par un cadrage de 30 minutes. Périmètre, livrables et critères de fin sont écrits avant de démarrer.</p>
+  </section>
+
+  {[vciso, ia].map((o, i) => (
+    <section class:list={['section', i === 1 && 'band']} id={o.id} aria-labelledby={`${o.id}-title`}>
+      <div class="wrap hang">
+        <div class="hang-head">
+          <h2 id={`${o.id}-title`}>{o.name}</h2>
+          <p class="offer-format">{o.format}</p>
+          <p class="muted">{o.forWho}</p>
+        </div>
+        <div class="prose">
+          <p class="lead">{o.summary}</p>
+          <h3>Ce que vous obtenez</h3>
+          <ul>{o.deliverables.map((d) => <li><strong>{d.title}.</strong> {d.detail}</li>)}</ul>
+          <h3>Fonctionnement</h3>
+          <p>{o.rhythm} {o.start}</p>
+          {o.id === 'vciso' ? (
+            <ol>
+              <li>Cadrage : entretiens, revue documentaire, état des obligations applicables.</li>
+              <li>Premier mois : registre des risques, priorités, feuille de route validée par la direction.</li>
+              <li>Ensuite, chaque mois : pilotage des actions, arbitrages, préparation des audits.</li>
+              <li>Chaque trimestre : comité sécurité et reporting COMEX d'une page.</li>
+            </ol>
+          ) : (
+            <ol>
+              <li>Inventaire des systèmes d'IA et classification AI Act.</li>
+              <li>Threat modeling des flux : modèle, index vectoriel, outils, sorties.</li>
+              <li>Mise en place ou revue des garde-fous, tests adverses.</li>
+              <li>Remise : registre des risques IA, politique IA, plan d'action, risque résiduel documenté.</li>
+            </ol>
+          )}
+          <a class="btn btn-primary" href={`/contact?sujet=${o.id}`}>Parler de {o.id === 'vciso' ? 'l’offre vCISO' : 'votre projet IA'}</a>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section wrap" aria-labelledby="compare-title">
+    <h2 id="compare-title">Comparer les deux offres</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col">Critère</th><th scope="col">{vciso.name}</th><th scope="col">{ia.name}</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Format</th><td>Abonnement mensuel, sans engagement long terme</td><td>Mission de 30 à 90 jours</td></tr>
+          <tr><th scope="row">Périmètre</th><td>Toute la gouvernance sécurité de l'entreprise</td><td>Un ou plusieurs systèmes d'IA identifiés</td></tr>
+          <tr><th scope="row">Référentiels</th><td>NIS2, DORA, ISO 27001, RGPD</td><td>AI Act, ISO 42001, OWASP Top 10 for LLM Applications, MITRE ATLAS</td></tr>
+          <tr><th scope="row">Interlocuteur</th><td>Direction générale, DSI, DAF</td><td>Direction produit, DSI, équipe data</td></tr>
+          <tr><th scope="row">Démarrage</th><td>2 à 4 semaines</td><td>Après validation du périmètre</td></tr>
+          <tr><th scope="row">Résultat</th><td>Une fonction sécurité pilotée et des preuves à jour</td><td>Un système d'IA classé, testé et gouverné</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <Cta title="Pas sûr de l'offre adaptée ?" text="Le diagnostic en 13 questions donne un premier niveau de lecture en 5 minutes." href="/diagnostic" label="Faire le diagnostic" />
+  </section>
+</Base>

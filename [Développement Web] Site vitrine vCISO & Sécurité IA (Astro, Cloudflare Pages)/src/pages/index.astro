@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import { SITE, OFFERS, FACTS } from '../data/site';
+import { HOME_FAQ } from '../data/faq';
+import { DIAG_QUESTIONS } from '../data/diagnostic';
+import { graph, person, org, website, faqPage } from '../data/schema';
+
+const first = DIAG_QUESTIONS[0];
+const jsonLd = graph(person, org, website, faqPage(HOME_FAQ, '/'));
+---
+<Base
+  title="VD, vCISO et sécurité de l'IA pour PME et ETI"
+  description="RSSI externalisé et sécurisation des projets d'IA pour dirigeants de PME, ETI et scale-ups européennes : NIS2, DORA, AI Act, ISO 27001, ISO 42001."
+  jsonLd={jsonLd}
+>
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero-grid">
+      <div>
+        <p class="hero-kicker">{SITE.tagline}</p>
+        <h1 id="hero-title">Sécurisez vos projets, préservez la réussite de votre entreprise.</h1>
+        <p class="lead">
+          Audit, gouvernance et mise en conformité NIS2, AI Act et ISO 42001, y compris sur vos environnements AWS, Azure et GCP.
+          Des livrables utilisables par votre direction et vos auditeurs, en 30 à 90 jours.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="/contact">Prendre rendez-vous</a>
+          <a class="btn btn-quiet" href="/diagnostic">Diagnostic gratuit en 5 minutes</a>
+        </div>
+        <div class="founder">
+          {/* À REMPLACER : portrait local /public/images/vd.webp (160×160), puis remplacer le bloc ci-dessous par :
+               <img src="/images/vd.webp" width="160" height="160" alt="Portrait de VD" /> */}
+          <span class="founder-mark" aria-hidden="true">VD</span>
+          <p><strong>VD</strong><br /><span class="muted">Fondateur, {SITE.experienceYears} ans d'expérience.</span></p>
+        </div>
+      </div>
+
+      <aside class="probe" aria-labelledby="probe-title">
+        <div class="probe-meta"><span id="probe-title">Diagnostic express</span><span>Question 1 sur 13</span></div>
+        <p class="probe-q">{first.question}</p>
+        <p class="probe-hint">{first.hint}</p>
+        <div class="probe-answers" role="group" aria-label="Répondre et continuer le diagnostic">
+          <a href="/diagnostic?q1=yes">Oui</a>
+          <a href="/diagnostic?q1=partial">Partiel</a>
+          <a href="/diagnostic?q1=no">Non</a>
+        </div>
+        <div class="probe-scale" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="probe-legend" aria-hidden="true"><span>À renforcer</span><span>Intermédiaire</span><span>Mature</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="wrap" aria-label="Repères">
+    <dl class="facts">
+      {FACTS.map((f) => (<div><dt>{f.value}</dt><dd>{f.label}</dd></div>))}
+    </dl>
+  </section>
+
+  <section class="section wrap" aria-labelledby="offres-title">
+    <div class="hang">
+      <div class="hang-head">
+        <h2 id="offres-title">Deux offres, rien d'autre</h2>
+        <p class="muted">Un pilotage continu de la sécurité, ou une mission ciblée sur vos systèmes d'IA. Les deux se combinent.</p>
+      </div>
+      <div class="offers">
+        {OFFERS.map((o) => (
+          <article class="offer" id={`offre-${o.id}`}>
+            <h3>{o.name}</h3>
+            <p class="offer-format">{o.format}</p>
+            <p>{o.summary}</p>
+            <p class="muted small">{o.forWho}</p>
+            <details>
+              <summary>Ce qui est inclus</summary>
+              <ul>{o.deliverables.map((d) => <li><strong>{d.title}.</strong> {d.detail}</li>)}</ul>
+              <p class="small muted">{o.start}</p>
+            </details>
+            <a class="btn btn-quiet" href={`/services#${o.id}`}>Détail de l'offre</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="vciso-title">
+    <div class="wrap hang">
+      <div class="hang-head">
+        <h2 id="vciso-title">Pourquoi un vCISO plutôt qu'un RSSI interne ?</h2>
+        <p class="muted">Pour une entreprise de 50 à 5 000 salariés, la question est rarement le besoin. C'est le format.</p>
+      </div>
+      <div>
+        <div class="table-scroll">
+          <table>
+            <caption class="visually-hidden">Comparaison RSSI interne et vCISO</caption>
+            <thead><tr><th scope="col">Critère</th><th scope="col">RSSI interne</th><th scope="col">vCISO</th></tr></thead>
+            <tbody>
+              <tr>
+                <th scope="row">Coût</th>
+                {/* Source : baromètres de rémunération 2026 (secondaires). À CONFIRMER avant publication. */}
+                <td>Plus de 100 000 € brut par an pour un profil expérimenté, avant charges, recrutement et outillage.</td>
+                <td>Facturé au temps réellement consommé, ajustable chaque mois.</td>
+              </tr>
+              <tr>
+                <th scope="row">Démarrage</th>
+                {/* Chiffre ANSSI repris par la presse. Le « 15 000 postes non pourvus » du brief n'a pas de source primaire identifiée : retiré. */}
+                <td>Plusieurs mois de recrutement sur un marché tendu : +49 % d'offres d'emploi cyber entre 2019 et 2024 selon l'ANSSI.</td>
+                <td>2 à 4 semaines.</td>
+              </tr>
+              <tr>
+                <th scope="row">Audits et due diligence</th>
+                <td>Dépend de l'expérience de la personne recrutée sur ces exercices.</td>
+                <td>Dossier de preuves structuré pour investisseurs, acquéreurs et questionnaires grands comptes.</td>
+              </tr>
+              <tr>
+                <th scope="row">Indépendance</th>
+                <td>Rattaché à une hiérarchie interne.</td>
+                <td>Rend compte directement à la direction, sans périmètre technique à défendre.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted">Le modèle interne reste préférable quand le volume de décisions sécurité justifie une équipe à plein temps. <a href="/blog/vciso-vs-rssi-interne">Lire l'analyse complète</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section wrap" aria-labelledby="faq-title">
+    <div class="hang">
+      <div class="hang-head"><h2 id="faq-title">Questions fréquentes</h2></div>
+      <Faq items={HOME_FAQ} />
+    </div>
+  </section>
+</Base>

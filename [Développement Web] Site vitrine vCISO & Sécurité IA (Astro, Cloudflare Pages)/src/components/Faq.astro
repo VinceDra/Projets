@@ -1,0 +1,13 @@
+---
+// Accordéons natifs <details>/<summary> : aucun JS, clavier et lecteurs d'écran supportés.
+interface Props { items: { q: string; a: string }[]; headingLevel?: 'h2' | 'h3' }
+const { items } = Astro.props;
+---
+<div class="faq">
+  {items.map((it) => (
+    <details>
+      <summary>{it.q}</summary>
+      <div><p>{it.a}</p></div>
+    </details>
+  ))}
+</div>

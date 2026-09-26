@@ -1,0 +1,20 @@
+---
+// Champs communs de consentement + pot de miel anti-robot.
+// Opt-in newsletter décoché par défaut (RGPD, consentement actif).
+interface Props { newsletter?: boolean; idPrefix: string }
+const { newsletter = true, idPrefix } = Astro.props;
+---
+<div class="hp" aria-hidden="true">
+  <label for={`${idPrefix}-website`}>Ne pas remplir ce champ</label>
+  <input type="text" id={`${idPrefix}-website`} name="website" tabindex="-1" autocomplete="off" />
+</div>
+<label class="check">
+  <input type="checkbox" name="rgpd" value="1" required />
+  <span>J'accepte que mes données soient utilisées pour répondre à cette demande, conformément à la <a href="/confidentialite">politique de confidentialité</a>. Obligatoire.</span>
+</label>
+{newsletter && (
+  <label class="check">
+    <input type="checkbox" name="newsletter" value="1" />
+    <span>Je souhaite recevoir Cyber Signal, la lettre mensuelle. Désinscription en un clic.</span>
+  </label>
+)}

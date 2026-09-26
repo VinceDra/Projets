@@ -1,0 +1,7 @@
+---
+// JSON-LD : bloc de données, non exécuté, donc compatible avec script-src 'self'.
+// Échappement de "<" pour empêcher toute fermeture prématurée de la balise.
+interface Props { data: unknown }
+const json = JSON.stringify(Astro.props.data).replace(/</g, '\\u003c');
+---
+<script is:inline type="application/ld+json" set:html={json} />

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.env
+.dev.vars
+
+# Lead magnets (PDF) et scripts de génération : dépôt privé séparé,
+# jamais dans ce dépôt public. Voir README > "Livrables PDF".
+private-assets/

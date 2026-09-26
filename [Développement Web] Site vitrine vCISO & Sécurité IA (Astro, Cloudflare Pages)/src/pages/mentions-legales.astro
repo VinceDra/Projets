@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+---
+<Base title="Mentions légales" description="Mentions légales du site vd-cybersec.fr.">
+  <section class="wrap section prose">
+    <h1>Mentions légales</h1>
+    <h2>Éditeur</h2>
+    {/* À REMPLACER : informations exactes (art. 6 III LCEN) */}
+    <p>{SITE.legalName}, [forme juridique] au capital de [montant] €, immatriculée au RCS de [ville] sous le numéro [SIREN].<br />
+    Siège : [adresse].<br />
+    Directeur de la publication : [nom].<br />
+    Contact : <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    <h2>Hébergement</h2>
+    <p>Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, États-Unis. {/* À CONFIRMER : entité contractante et adresse à jour */}</p>
+    <h2>Propriété intellectuelle</h2>
+    <p>Les textes, documents et éléments graphiques de ce site sont protégés. Toute reproduction substantielle nécessite une autorisation écrite. Les citations courtes avec mention de la source sont autorisées.</p>
+    <h2>Responsabilité</h2>
+    <p>Les contenus de ce site informent et ne constituent pas un avis juridique. Les références réglementaires sont datées et sourcées ; vérifiez leur état à jour avant toute décision.</p>
+  </section>
+</Base>

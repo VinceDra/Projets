@@ -1,0 +1,22 @@
+# Configuration Worker (Workers + assets). Les secrets ne vont JAMAIS ici :
+#   wrangler secret put BREVO_API_KEY | DOWNLOAD_SECRET
+name = "mainwebsite"                # doit correspondre exactement au nom du projet Cloudflare
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"                  # utilisé par src/index.ts pour servir les fichiers statiques en fallback
+not_found_handling = "404-page"     # sert dist/404.html pour tout chemin sans correspondance
+
+[vars]
+SITE_ORIGIN = "https://vd-cybersec.fr"
+SENDER_EMAIL = "no-reply@vd-cybersec.fr"   # À REMPLACER : expéditeur vérifié dans Brevo
+NOTIFY_EMAIL = "contact@vd-cybersec.fr"    # À REMPLACER : boîte de réception des demandes
+NEWSLETTER_LIST_ID = ""                    # À REMPLACER : identifiant de liste Brevo
+DOI_TEMPLATE_ID = ""                       # À REMPLACER : modèle de double opt-in Brevo
+MCP_ENABLED = "false"                      # "true" uniquement après la règle WAF sur /mcp
+
+[[r2_buckets]]
+binding = "PDF_BUCKET"
+bucket_name = "vd-private-assets"          # bucket privé, sans accès public

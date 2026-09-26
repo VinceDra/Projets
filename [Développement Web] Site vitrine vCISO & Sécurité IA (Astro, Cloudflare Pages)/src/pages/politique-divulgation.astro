@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+---
+<Base title="Politique de divulgation des vulnérabilités" description="Comment signaler une vulnérabilité affectant ce site.">
+  <section class="wrap section prose">
+    <h1>Signaler une vulnérabilité</h1>
+    <p class="lead">Si vous pensez avoir trouvé une faille de sécurité sur ce site, merci de nous l'indiquer. Chaque signalement est lu.</p>
+    <h2>Périmètre</h2>
+    <p>Le domaine vd-cybersec.fr et ses sous-domaines. Sont exclus : les tests de déni de service, l'ingénierie sociale, les tests physiques et les services tiers (Cloudflare, Brevo), qui ont leurs propres programmes.</p>
+    <h2>Comment signaler</h2>
+    <p>Écrivez à <a href={`mailto:${SITE.securityEmail}`}>{SITE.securityEmail}</a> avec la description, les étapes de reproduction et l'impact estimé. Ne joignez aucune donnée personnelle obtenue pendant vos tests.</p>
+    {/* À CONFIRMER : délais d'engagement */}
+    <h2>Nos engagements</h2>
+    <ul>
+      <li>Accusé de réception sous 5 jours ouvrés.</li>
+      <li>Information sur la correction et sa date.</li>
+      <li>Remerciements publics si vous le souhaitez.</li>
+      <li>Aucune action en justice contre une recherche menée de bonne foi dans ce cadre.</li>
+    </ul>
+    <p>Il n'existe pas de programme de récompense financière.</p>
+  </section>
+</Base>

@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import { RESOURCES } from '../../data/resources';
+import { graph, org, breadcrumb } from '../../data/schema';
+const jsonLd = graph(org, breadcrumb([{ name: 'Accueil', path: '/' }, { name: 'Ressources', path: '/ressources' }]));
+---
+<Base
+  title="Ressources : checklists, matrices et playbooks"
+  description="Six livrables opérationnels : checklist NIS2, matrice AI Act, playbook incident 24 h, checklist due diligence, grille de threat modeling LLM, modèle de reporting COMEX."
+  jsonLd={jsonLd}
+>
+  <section class="wrap article-head">
+    <h1>Ressources</h1>
+    <p class="lead">Six documents de travail, conçus pour être remplis et partagés en interne. Gratuits, envoyés par email.</p>
+  </section>
+  <section class="section wrap" aria-label="Liste des ressources">
+    <ul class="list-plain">
+      {RESOURCES.map((r) => (
+        <li class="entry hang">
+          <div class="hang-head"><p class="entry-meta">{r.type}, {r.format}</p></div>
+          <div>
+            <h2><a href={`/ressources/${r.slug}`}>{r.title}</a></h2>
+            <p class="muted">{r.description}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,25 @@
+# robots.txt - vd-cybersec.fr
+# Exploration ouverte à tous les robots, y compris les agents IA de recherche
+# (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, etc.).
+# Aucune zone d'administration : le site est statique. /api/ ne contient que des points de réception de formulaires.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /merci
+Disallow: /telechargement
+Disallow: /mcp
+
+# Option : refuser l'usage pour l'entraînement de modèles tout en restant cité par les moteurs IA.
+# Décommenter si souhaité. Liste des user-agents à vérifier régulièrement (À CONFIRMER).
+# User-agent: GPTBot
+# Disallow: /
+# User-agent: ClaudeBot
+# Disallow: /
+# User-agent: Google-Extended
+# Disallow: /
+# User-agent: CCBot
+# Disallow: /
+# Rappel : robots.txt est une convention, pas un contrôle d'accès.
+
+Sitemap: https://vd-cybersec.fr/sitemap.xml
